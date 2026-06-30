@@ -1,1 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Cell Shift Handoff Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #555;
+            margin-bottom: 10px;
+            margin-top: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .section-hint {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group.large {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            background-color: #f9f9ff;
+        }
+
+        .station-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .station-card {
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f0f4ff;
+            text-align: center;
+        }
+
+        .station-card label {
+            display: block;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .station-card small {
+            display: block;
+            font-size: 11px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .progress-inputs {
+            display: flex;
+            gap: 8px;
+            flex-direction: column;
+        }
+
+        .progress-inputs input {
+            padding: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .progress-inputs .expected {
+            background: #fff9e6;
+            border-color: #ffc107;
+        }
+
+        .progress-inputs .actual {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0;
+            font-weight: 400;
+            cursor: pointer;
+        }
+
+        .radio-group input[type="radio"],
+        .radio-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .department-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #667eea;
+        }
+
+        .department-section.hidden {
+            display: none;
+        }
+
+        .quality-issue-card,
+        .parts-shortage-card,
+        .engineering-issue-card,
+        .management-alert-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .quality-issue-card:hover,
+        .parts-shortage-card:hover,
+        .engineering-issue-card:hover,
+        .management-alert-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+
+        .add-button {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .add-button:hover {
+            background: #45a049;
+        }
+
+        .remove-button {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+
+        .remove-button:hover {
+            background: #da190b;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #999;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #777;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-message.hidden {
+            display: none;
+        }
+
+        .header-section {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .department-selector {
+            background: #fff3e0;
+            border-left: 5px solid #ff9800;
+        }
+
+        .submit-section {
+            background: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .station-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-primary, .btn-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- HEADER SECTION -->
+        <div class="form-section header-section">
+            <h1>Production Cell Shift Handoff Report</h1>
+            <p class="subtitle">All Cells | RAW Side and Finish Side</p>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date:</label>
+                    <input type="date" id="handoffDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Cell to Report:</label>
+                    <select id="cell" onchange="updateCellContext()" required>
+                        <option value="">-- Select Cell --</option>
+                        <option value="Shell 1">Shell 1</option>
+                        <option value="Shell 2">Shell 2</option>
+                        <option value="RAW">RAW</option>
+                        <option value="Finish 1">Finish 1</option>
+                        <option value="Finish 2">Finish 2</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Paint">Paint</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Handoff Time:</label>
+                    <input type="time" id="handoffTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Takt Time (minutes):</label>
+                    <input type="number" id="taktTimeMinutes" placeholder="270 (4.5 hours)" min="0">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>For Shift:</label>
+                    <select id="shiftTemplate" onchange="applyShiftTemplate()" required>
+                        <option value="">-- Select Shift --</option>
+                        <option value="day">Days | Mon-Fri | 6:30 AM to 3:00 PM</option>
+                        <option value="night">Nights | Mon-Thu | 4:00 PM to 2:30 AM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Building Side:</label>
+                    <input type="text" id="buildingSide" placeholder="Selected automatically" readonly>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Handoff Author (Outgoing):</label>
+                    <input type="text" id="handoffAuthor" placeholder="Name of operator leaving" required>
+                </div>
+                <div class="form-group">
+                    <label>Associated Email:</label>
+                    <input type="email" id="handoffAuthorEmail" placeholder="New Flyer email address" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Shift Receiving (Incoming):</label>
+                    <input type="text" id="shiftReceiving" placeholder="Name of operator arriving" required>
+                </div>
+                <div class="form-group">
+                    <label>Associated Email:</label>
+                    <input type="email" id="shiftReceivingEmail" placeholder="New Flyer email address" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Employee HAVE:</label>
+                    <input type="text" id="employeeHave" placeholder="Labor hours available">
+                </div>
+                <div class="form-group">
+                    <label>Employee NEED:</label>
+                    <input type="text" id="employeeNeed" placeholder="From move schedule report">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Planned Moves This Shift:</label>
+                    <input type="number" id="movesPlanned" placeholder="Example: 6" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Planned Move Times:</label>
+                    <textarea id="moveTimes" placeholder="Example: 08:30, 09:00, 09:30" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label>Cascading Installs:</label>
+                    <textarea id="cascadingInstalls" maxlength="200" placeholder="Up to 200 characters" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label>Priority Out of Station Work:</label>
+                    <textarea id="priorityOutOfStation" maxlength="200" placeholder="Up to 200 characters" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label>Additional Information:</label>
+                    <textarea id="additionalInformation" maxlength="200" placeholder="Up to 200 characters" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATION PROGRESS SECTION -->
+        <div class="form-section station-section">
+            <h2>Station Progress Summary</h2>
+            <p class="section-hint">Select a Cell to Report first. The form will load the matching station list for that cell.</p>
+            <div style="background: #fff9e6; border-left: 5px solid #ffc107; border-radius: 6px; padding: 12px 15px; margin-bottom: 15px; font-size: 13px; color: #555;">
+                <strong>How to fill out each station card:</strong><br>
+                <strong>Expected %</strong> — what percentage of work at this station should be complete by this point in the shift.<br>
+                <strong>Actual %</strong> — what percentage is actually complete right now, based on what you observe.<br>
+                <strong>SR / Frame #</strong> — every station card must have an SR/Frame # entered.
+            </div>
+            <div id="productionStations" class="station-grid"></div>
+        </div>
+
+        <!-- DEPARTMENT SELECTOR -->
+        <div class="form-section department-selector">
+            <h2>Department Issues & Details</h2>
+            <p class="section-hint">Select a department to add issues, or choose "None" if no department-specific issues</p>
+            
+            <div class="form-group large">
+                <label>Select Department:</label>
+                <select id="departmentDropdown" onchange="switchDepartment()">
+                    <option value="">-- No Issues (Clear Section) --</option>
+                    <option value="quality">Quality Issues</option>
+                    <option value="parts">Parts & Supply Shortages</option>
+                    <option value="engineering">Engineering Issues</option>
+                    <option value="management">Management Alerts</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- QUALITY SECTION -->
+        <div id="qualitySection" class="form-section department-section hidden">
+            <h2>Quality Issues Details</h2>
+            <button type="button" class="add-button" onclick="addQualityIssue()">+ Add Quality Issue</button>
+            
+            <div id="qualityIssuesList">
+                <div class="quality-issue-card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Station:</label>
+                            <select class="station-select">
+                                <option value="">-- Select Cell to Report first --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Issue Location on Bus:</label>
+                            <input type="text" placeholder="e.g., RH Door Frame" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Issue Description:</label>
+                            <textarea placeholder="Detailed description of what was found..." rows="3" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Root Cause:</label>
+                            <select required>
+                                <option value="">-- Select --</option>
+                                <option value="parts">Parts</option>
+                                <option value="assembly">Assembly</option>
+                                <option value="tool">Tool</option>
+                                <option value="process">Process</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Severity:</label>
+                            <select required>
+                                <option value="">-- Select --</option>
+                                <option value="cosmetic">Cosmetic</option>
+                                <option value="functional">Functional</option>
+                                <option value="safety">Safety</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Rework Location:</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="reworkLocation" value="this-station"> This Station</label>
+                                <label><input type="radio" name="reworkLocation" value="catchup"> Catch-up Station</label>
+                                <label><input type="radio" name="reworkLocation" value="post-qc"> Post-Build QC</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Inspector Name / Badge:</label>
+                            <input type="text" placeholder="Inspector who found issue">
+                        </div>
+                        <div class="form-group">
+                            <label>Customer Notification:</label>
+                            <div class="radio-group">
+                                <label><input type="radio" name="customerNotif" value="no" checked> No</label>
+                                <label><input type="radio" name="customerNotif" value="yes"> Yes</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="remove-button" onclick="removeQualityIssue(this)">Remove Issue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PARTS SECTION -->
+        <div id="partsSection" class="form-section department-section hidden">
+            <h2>Parts & Supply Shortages</h2>
+            <button type="button" class="add-button" onclick="addPartShortage()">+ Add Part Shortage</button>
+            
+            <div id="partsShortageList">
+                <div class="parts-shortage-card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Station:</label>
+                            <select class="station-select">
+                                <option value="">-- Select Cell to Report first --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Part Number:</label>
+                            <input type="text" placeholder="e.g., 14-A-7721" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Part Description:</label>
+                            <input type="text" placeholder="e.g., Door Handle Kit (RH)" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Needed:</label>
+                            <input type="number" min="0" value="2" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Received:</label>
+                            <input type="number" min="0" value="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Available in Stock:</label>
+                            <input type="number" min="0" value="0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Supplier:</label>
+                            <input type="text" placeholder="Supplier name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>PO #:</label>
+                            <input type="text" placeholder="Purchase order number">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Lead Time:</label>
+                            <input type="text" placeholder="e.g., 24 hours">
+                        </div>
+                        <div class="form-group">
+                            <label>Expected Arrival:</label>
+                            <input type="datetime-local" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Workaround / Cross-Use Available:</label>
+                            <textarea placeholder="Describe any workaround (e.g., cross-use from stock 14-A-7720)" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="button" class="remove-button" onclick="removePartShortage(this)">Remove Part</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENGINEERING SECTION -->
+        <div id="engineeringSection" class="form-section department-section hidden">
+            <h2>Engineering Issues Details</h2>
+            <button type="button" class="add-button" onclick="addEngineeringIssue()">+ Add Engineering Issue</button>
+            
+            <div id="engineeringIssuesList">
+                <div class="engineering-issue-card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Station:</label>
+                            <select class="station-select">
+                                <option value="">-- Select Cell to Report first --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Issue Description:</label>
+                            <textarea placeholder="What is the engineering issue?" rows="3" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Impact on Bus:</label>
+                            <textarea placeholder="How does this affect the bus and manufacturing process?" rows="3" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Engineer Assigned:</label>
+                            <input type="text" placeholder="Name of engineer" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Time Issue Logged:</label>
+                            <input type="time" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Temporary Workaround:</label>
+                            <textarea placeholder="What can we do right now to keep production moving?" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Target Resolution:</label>
+                            <input type="datetime-local" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Resolution Date:</label>
+                            <input type="datetime-local" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Engineering Change Document #:</label>
+                            <input type="text" placeholder="e.g., EC-2026-0847">
+                        </div>
+                    </div>
+
+                    <button type="button" class="remove-button" onclick="removeEngineeringIssue(this)">Remove Issue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MANAGEMENT SECTION -->
+        <div id="managementSection" class="form-section department-section hidden">
+            <h2>Management Alerts & Issues</h2>
+            <button type="button" class="add-button" onclick="addManagementAlert()">+ Add Management Alert</button>
+            
+            <div id="managementAlertsList">
+                <div class="management-alert-card">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Alert Type:</label>
+                            <select required>
+                                <option value="">-- Select --</option>
+                                <option value="staffing">Staffing</option>
+                                <option value="overtime">Overtime</option>
+                                <option value="safety">Safety</option>
+                                <option value="compliance">Compliance</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Issue Description:</label>
+                            <textarea placeholder="What is the management issue?" rows="3" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Escalation Level:</label>
+                            <select required>
+                                <option value="">-- Select --</option>
+                                <option value="shift-lead">Shift Lead</option>
+                                <option value="plant-manager">Plant Manager</option>
+                                <option value="director">Director</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Manager Notified:</label>
+                            <input type="text" placeholder="Name of manager">
+                        </div>
+                        <div class="form-group">
+                            <label>Notification Time:</label>
+                            <input type="time">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>Recommended Action:</label>
+                            <textarea placeholder="What action should be taken?" rows="2" required></textarea>
+                        </div>
+                    </div>
+
+                    <button type="button" class="remove-button" onclick="removeManagementAlert(this)">Remove Alert</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUBMIT SECTION -->
+        <div class="form-section submit-section">
+            <div class="button-group">
+                <button type="button" class="btn-primary" onclick="submitForm()">Submit Handoff</button>
+                <button type="button" class="btn-secondary" onclick="saveFormDraft()">Save as Draft</button>
+                <button type="button" class="btn-secondary" onclick="clearForm()">Clear Form</button>
+            </div>
+
+            <div id="submitStatus" class="status-message hidden"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const cellConfigurations = {
+            'Shell 1': {
+                side: 'RAW Side',
+                stations: [
+                    { station: '3200A', expected: 0, actual: 0 },
+                    { station: '3200B', expected: 0, actual: 0 },
+                    { station: '3400A', expected: 0, actual: 0 },
+                    { station: '3400B', expected: 0, actual: 0 },
+                    { station: '3600', expected: 0, actual: 0 }
+                ]
+            },
+            'Shell 2': {
+                side: 'RAW Side',
+                stations: [
+                    { station: '4200', expected: 0, actual: 0 },
+                    { station: '4400', expected: 0, actual: 0 },
+                    { station: '4600', expected: 0, actual: 0 },
+                    { station: '4800', expected: 0, actual: 0 }
+                ]
+            },
+            'RAW': {
+                side: 'RAW Side',
+                stations: [
+                    { station: '5200L', expected: 100, actual: 100 },
+                    { station: '5200U', expected: 100, actual: 100 },
+                    { station: '5400L', expected: 50, actual: 45 },
+                    { station: '5400U', expected: 0, actual: 0 },
+                    { station: '5600', expected: 0, actual: 0 },
+                    { station: '5800', expected: 0, actual: 0 },
+                    { station: '6000', expected: 0, actual: 0 }
+                ]
+            },
+            'Finish 1': {
+                side: 'Finish Side',
+                stations: [
+                    { station: '7400A', expected: 0, actual: 0 },
+                    { station: '7400B', expected: 0, actual: 0 },
+                    { station: '7600L', expected: 0, actual: 0 },
+                    { station: '7600U', expected: 0, actual: 0 },
+                    { station: '7800', expected: 0, actual: 0 }
+                ]
+            },
+            'Finish 2': {
+                side: 'Finish Side',
+                stations: [
+                    { station: '8200', expected: 0, actual: 0 },
+                    { station: '8400', expected: 0, actual: 0 },
+                    { station: '8600', expected: 0, actual: 0 },
+                    { station: '8800', expected: 0, actual: 0 }
+                ]
+            },
+            'Electrical': {
+                side: 'Finish Side',
+                stations: [
+                    { station: '9000', expected: 0, actual: 0 },
+                    { station: 'Comm', expected: 0, actual: 0 }
+                ]
+            },
+            'Paint': {
+                side: 'Finish Side',
+                stations: []
+            }
+        };
+
+        let activeStations = [];
+
+        function renderProductionStations() {
+            const grid = document.getElementById('productionStations');
+            if (!activeStations.length) {
+                const cell = document.getElementById('cell').value;
+                grid.innerHTML = cell === 'Paint'
+                    ? '<div class="station-card" style="grid-column: 1 / -1; text-align: left;"><label>Paint Station List Pending</label><small>Add Paint station names to the site-specific station master before using this cell for live submissions.</small></div>'
+                    : '<div class="station-card" style="grid-column: 1 / -1; text-align: left;"><label>Select a Cell to Report</label><small>The station list and issue selectors will update to match the selected cell.</small></div>';
+                return;
+            }
+
+            grid.innerHTML = activeStations.map(station => `
+                <div class="station-card">
+                    <label>${station.station}${station.handoff ? ' ★' : ''}<br><small>${document.getElementById('cell').value}</small></label>
+                    <div class="progress-inputs">
+                        <input type="text" class="sr-frame" placeholder="SR / Frame #" style="background:#f3e9ff; border-color:#9c6ade;">
+                        <input type="number" class="expected" placeholder="Exp %" min="0" max="100" value="${station.expected}">
+                        <input type="number" class="actual" placeholder="Act %" min="0" max="100" value="${station.actual}">
+                    </div>
+                    ${station.handoff ? '<small>Reference Point</small>' : ''}
+                </div>
+            `).join('');
+        }
+
+        function populateStationSelectors() {
+            const stationOptions = activeStations.length
+                ? ['<option value="">-- Select Station --</option>']
+                    .concat(activeStations.map(station => `<option value="${station.station}">${station.station}</option>`))
+                    .join('')
+                : '<option value="">-- Select Cell to Report first --</option>';
+
+            document.querySelectorAll('.station-select').forEach(select => {
+                select.innerHTML = stationOptions;
+            });
+        }
+
+        function updateCellContext() {
+            const selectedCell = document.getElementById('cell').value;
+            const cellConfiguration = cellConfigurations[selectedCell];
+            activeStations = cellConfiguration ? cellConfiguration.stations.map(station => ({ ...station })) : [];
+            document.getElementById('buildingSide').value = cellConfiguration ? cellConfiguration.side : '';
+            renderProductionStations();
+            populateStationSelectors();
+        }
+
+        function applyShiftTemplate() {
+            const shiftTemplate = document.getElementById('shiftTemplate').value;
+
+            // Shift start/end times are no longer collected on the form;
+            // they are implied by the selected shift template (Days / Nights).
+        }
+
+        function initializeProductionView() {
+            const queryParams = new URLSearchParams(window.location.search);
+            const requestedCell = queryParams.get('cell');
+            const requestedShift = queryParams.get('shift');
+
+            if (requestedCell && cellConfigurations[requestedCell]) {
+                document.getElementById('cell').value = requestedCell;
+            }
+
+            if (requestedShift === 'day' || requestedShift === 'night') {
+                document.getElementById('shiftTemplate').value = requestedShift;
+                applyShiftTemplate();
+            }
+
+            updateCellContext();
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeProductionView);
+
+        // DEPARTMENT SWITCHING
+        function switchDepartment() {
+            const department = document.getElementById('departmentDropdown').value;
+            
+            document.getElementById('qualitySection').classList.add('hidden');
+            document.getElementById('partsSection').classList.add('hidden');
+            document.getElementById('engineeringSection').classList.add('hidden');
+            document.getElementById('managementSection').classList.add('hidden');
+            
+            if (department === 'quality') {
+                document.getElementById('qualitySection').classList.remove('hidden');
+            } else if (department === 'parts') {
+                document.getElementById('partsSection').classList.remove('hidden');
+            } else if (department === 'engineering') {
+                document.getElementById('engineeringSection').classList.remove('hidden');
+            } else if (department === 'management') {
+                document.getElementById('managementSection').classList.remove('hidden');
+            }
+        }
+
+        // ADD / REMOVE QUALITY ISSUES
+        function addQualityIssue() {
+            const listDiv = document.getElementById('qualityIssuesList');
+            const newIssue = document.querySelector('.quality-issue-card').cloneNode(true);
+            newIssue.querySelectorAll('input, textarea, select').forEach(el => {
+                el.value = '';
+            });
+            listDiv.appendChild(newIssue);
+        }
+
+        function removeQualityIssue(button) {
+            const cards = document.querySelectorAll('.quality-issue-card');
+            if (cards.length > 1) {
+                button.closest('.quality-issue-card').remove();
+            } else {
+                alert('You must keep at least one quality issue card');
+            }
+        }
+
+        // ADD / REMOVE PART SHORTAGES
+        function addPartShortage() {
+            const listDiv = document.getElementById('partsShortageList');
+            const newPart = document.querySelector('.parts-shortage-card').cloneNode(true);
+            newPart.querySelectorAll('input, textarea, select').forEach(el => {
+                el.value = '';
+            });
+            listDiv.appendChild(newPart);
+        }
+
+        function removePartShortage(button) {
+            const cards = document.querySelectorAll('.parts-shortage-card');
+            if (cards.length > 1) {
+                button.closest('.parts-shortage-card').remove();
+            } else {
+                alert('You must keep at least one part card');
+            }
+        }
+
+        // ADD / REMOVE ENGINEERING ISSUES
+        function addEngineeringIssue() {
+            const listDiv = document.getElementById('engineeringIssuesList');
+            const newIssue = document.querySelector('.engineering-issue-card').cloneNode(true);
+            newIssue.querySelectorAll('input, textarea, select').forEach(el => {
+                el.value = '';
+            });
+            listDiv.appendChild(newIssue);
+        }
+
+        function removeEngineeringIssue(button) {
+            const cards = document.querySelectorAll('.engineering-issue-card');
+            if (cards.length > 1) {
+                button.closest('.engineering-issue-card').remove();
+            } else {
+                alert('You must keep at least one engineering issue card');
+            }
+        }
+
+        // ADD / REMOVE MANAGEMENT ALERTS
+        function addManagementAlert() {
+            const listDiv = document.getElementById('managementAlertsList');
+            const newAlert = document.querySelector('.management-alert-card').cloneNode(true);
+            newAlert.querySelectorAll('input, textarea, select').forEach(el => {
+                el.value = '';
+            });
+            listDiv.appendChild(newAlert);
+        }
+
+        function removeManagementAlert(button) {
+            const cards = document.querySelectorAll('.management-alert-card');
+            if (cards.length > 1) {
+                button.closest('.management-alert-card').remove();
+            } else {
+                alert('You must keep at least one management alert card');
+            }
+        }
+
+        // COLLECT FORM DATA
+        function collectFormData() {
+            const formData = {};
+
+            formData.header = {
+                date: document.getElementById('handoffDate').value,
+                cell: document.getElementById('cell').value,
+                buildCell: document.getElementById('cell').value,
+                buildingSide: document.getElementById('buildingSide').value,
+                shiftTemplate: document.getElementById('shiftTemplate').value,
+                handoffTime: document.getElementById('handoffTime').value,
+                handoffAuthor: document.getElementById('handoffAuthor').value,
+                authorEmail: document.getElementById('handoffAuthorEmail').value,
+                shiftReceiving: document.getElementById('shiftReceiving').value,
+                receivingEmail: document.getElementById('shiftReceivingEmail').value,
+                employeeHave: document.getElementById('employeeHave').value,
+                employeeNeed: document.getElementById('employeeNeed').value,
+                movesPlanned: Number(document.getElementById('movesPlanned').value) || 0,
+                moveTimes: document.getElementById('moveTimes').value,
+                taktTimeMinutes: Number(document.getElementById('taktTimeMinutes').value) || 0,
+                cascadingInstalls: document.getElementById('cascadingInstalls').value,
+                priorityOutOfStation: document.getElementById('priorityOutOfStation').value,
+                additionalInformation: document.getElementById('additionalInformation').value
+            };
+
+            formData.stations = [];
+            document.querySelectorAll('.station-card').forEach((card, index) => {
+                const srFrameEl = card.querySelector('.sr-frame');
+                const expectedEl = card.querySelector('.expected');
+                const actualEl = card.querySelector('.actual');
+                if (!expectedEl || !actualEl) return; // skip placeholder cards (e.g. "Select a Cell to Report")
+                const expected = expectedEl.value;
+                const actual = actualEl.value;
+                formData.stations.push({
+                    station: activeStations[index]?.station || '',
+                    srFrame: srFrameEl ? srFrameEl.value : '',
+                    expectedPercent: expected,
+                    actualPercent: actual,
+                    delta: Number(actual) - Number(expected),
+                    buildCell: document.getElementById('cell').value
+                });
+            });
+
+            const department = document.getElementById('departmentDropdown').value;
+            formData.department = department;
+
+            if (department === 'quality') {
+                formData.qualityIssues = [];
+                document.querySelectorAll('.quality-issue-card').forEach(card => {
+                    formData.qualityIssues.push({
+                        station: card.querySelector('select').value,
+                        location: card.querySelectorAll('input')[1].value,
+                        description: card.querySelector('textarea').value,
+                        rootCause: card.querySelectorAll('select')[1].value,
+                        severity: card.querySelectorAll('select')[2].value,
+                        reworkLocation: Array.from(card.querySelectorAll('input[name="reworkLocation"]')).find(r => r.checked)?.value,
+                        inspector: card.querySelectorAll('input')[2].value,
+                        customerNotification: Array.from(card.querySelectorAll('input[name="customerNotif"]')).find(r => r.checked)?.value
+                    });
+                });
+            } else if (department === 'parts') {
+                formData.partShortages = [];
+                document.querySelectorAll('.parts-shortage-card').forEach(card => {
+                    const inputs = card.querySelectorAll('input');
+                    formData.partShortages.push({
+                        station: card.querySelector('select').value,
+                        partNumber: inputs[1].value,
+                        description: inputs[2].value,
+                        needed: inputs[3].value,
+                        received: inputs[4].value,
+                        available: inputs[5].value,
+                        supplier: inputs[6].value,
+                        poNumber: inputs[7].value,
+                        leadTime: inputs[8].value,
+                        expectedArrival: inputs[9].value,
+                        workaround: card.querySelector('textarea').value
+                    });
+                });
+            } else if (department === 'engineering') {
+                formData.engineeringIssues = [];
+                document.querySelectorAll('.engineering-issue-card').forEach(card => {
+                    const textareas = card.querySelectorAll('textarea');
+                    const inputs = card.querySelectorAll('input');
+                    formData.engineeringIssues.push({
+                        station: card.querySelector('select').value,
+                        description: textareas[0].value,
+                        impact: textareas[1].value,
+                        engineer: inputs[1].value,
+                        timeLogged: inputs[2].value,
+                        workaround: textareas[2].value,
+                        targetResolution: inputs[3].value,
+                        fullResolution: inputs[4].value,
+                        changeDocNumber: inputs[5].value
+                    });
+                });
+            } else if (department === 'management') {
+                formData.managementAlerts = [];
+                document.querySelectorAll('.management-alert-card').forEach(card => {
+                    const selects = card.querySelectorAll('select');
+                    const inputs = card.querySelectorAll('input');
+                    const textareas = card.querySelectorAll('textarea');
+                    formData.managementAlerts.push({
+                        alertType: selects[0].value,
+                        description: textareas[0].value,
+                        escalationLevel: selects[1].value,
+                        managerNotified: inputs[1].value,
+                        notificationTime: inputs[2].value,
+                        recommendedAction: textareas[1].value
+                    });
+                });
+            }
+
+            return formData;
+        }
+
+        // ─── SHAREPOINT CONFIG ───────────────────────────────────────────────────
+        const SP_SITE = 'https://newflyer.sharepoint.com/sites/Leadership-StCloud-Transit';
+        const SP_API  = `${SP_SITE}/_api/web/lists/getbytitle`;
+
+        // Get the SharePoint form digest (request validation token) needed for all POST calls
+        async function getDigest() {
+            const r = await fetch(`${SP_SITE}/_api/contextinfo`, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json;odata=nometadata' },
+                credentials: 'include'
+            });
+            if (!r.ok) throw new Error('Could not get SharePoint context. Are you signed in to Microsoft 365?');
+            const data = await r.json();
+            return data.FormDigestValue;
+        }
+
+        // Generic helper: POST one item to any SharePoint list
+        async function spCreateItem(listName, itemBody, digest) {
+            const r = await fetch(`${SP_API}('${listName}')/items`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json;odata=nometadata',
+                    'Content-Type': 'application/json;odata=nometadata',
+                    'X-RequestDigest': digest
+                },
+                credentials: 'include',
+                body: JSON.stringify(itemBody)
+            });
+            if (!r.ok) {
+                const err = await r.text();
+                throw new Error(`Failed to write to ${listName}: ${r.status} — ${err}`);
+            }
+            return await r.json();
+        }
+
+        // Resolve a typed email address to a real SharePoint user ID for Person/Group fields.
+        // Throws a clear error if the email does not match a real account in the tenant —
+        // this is the typo protection: a misspelled address will fail here instead of
+        // silently saving as plain text.
+        async function ensureSharePointUser(email, digest) {
+            if (!email) throw new Error('Email address is required.');
+            const r = await fetch(`${SP_SITE}/_api/web/ensureuser`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json;odata=nometadata',
+                    'Content-Type': 'application/json;odata=nometadata',
+                    'X-RequestDigest': digest
+                },
+                credentials: 'include',
+                body: JSON.stringify({ logonName: email })
+            });
+            if (!r.ok) {
+                throw new Error(`"${email}" could not be matched to a New Flyer account. Check for typos.`);
+            }
+            const data = await r.json();
+            return data.Id; // numeric SharePoint user ID
+        }
+
+        // ─── SUBMIT FORM ─────────────────────────────────────────────────────────
+        async function submitForm() {
+            const formData = collectFormData();
+            const statusDiv = document.getElementById('submitStatus');
+
+            // Validation
+            if (!formData.header.date || !formData.header.buildCell || !formData.header.shiftTemplate || !formData.header.handoffAuthor || !formData.header.authorEmail || !formData.header.shiftReceiving || !formData.header.receivingEmail) {
+                statusDiv.className = 'status-message error';
+                statusDiv.textContent = '❌ Please fill in all required header fields, including Cell to Report and Shift.';
+                statusDiv.classList.remove('hidden');
+                return;
+            }
+            if (!activeStations.length) {
+                statusDiv.className = 'status-message error';
+                statusDiv.textContent = '❌ No station list is configured for the selected cell yet.';
+                statusDiv.classList.remove('hidden');
+                return;
+            }
+            const missingSR = formData.stations.some(s => s.station && !s.srFrame.trim());
+            if (missingSR) {
+                statusDiv.className = 'status-message error';
+                statusDiv.textContent = '❌ Every station card must have an SR / Frame # entered before submitting.';
+                statusDiv.classList.remove('hidden');
+                return;
+            }
+
+            // Show working state
+            statusDiv.className = 'status-message';
+            statusDiv.style.background = '#e3f2fd';
+            statusDiv.style.color = '#0d47a1';
+            statusDiv.style.border = '1px solid #90caf9';
+            statusDiv.textContent = '⏳ Submitting handoff — please wait...';
+            statusDiv.classList.remove('hidden');
+
+            try {
+                // Step 1: Get SharePoint request digest
+                const digest = await getDigest();
+
+                // Step 2: Resolve Author and Receiving emails to real SharePoint accounts.
+                // This is the typo-protection step — if the email doesn't match a real
+                // New Flyer account, this throws and the submission stops here.
+                const authorUserId   = await ensureSharePointUser(formData.header.authorEmail, digest);
+                const receivingUserId = await ensureSharePointUser(formData.header.receivingEmail, digest);
+
+                // Step 3: Build a unique Title for this handoff: Date + Cell + Time
+                const handoffTitle = `${formData.header.date}-${formData.header.buildCell}-${formData.header.handoffTime}`.replace(/\s+/g, '-').replace(/:/g, '');
+
+                // Step 4: Write Handoff_Header
+                const headerItem = {
+                    Title:                  handoffTitle,
+                    HandoffDate:            formData.header.date,
+                    BuildCell:              formData.header.buildCell,
+                    BuildingSide:           formData.header.buildingSide,
+                    ShiftTemplate:          formData.header.shiftTemplate === 'day' ? 'Days' : 'Nights',
+                    HandoffTime:            formData.header.handoffTime,
+                    HandoffAuthor:          formData.header.handoffAuthor,
+                    HandoffAuthorEmailId:   authorUserId,    // Person/Group field — numeric user ID
+                    ShiftReceiving:         formData.header.shiftReceiving,
+                    ShiftReceivingEmailId:  receivingUserId, // Person/Group field — numeric user ID
+                    EmployeeHave:           formData.header.employeeHave,
+                    EmployeeNeed:           formData.header.employeeNeed,
+                    MovesPlanned:           formData.header.movesPlanned || 0,
+                    MoveTimes:              formData.header.moveTimes,
+                    TaktTimeMinutes:        formData.header.taktTimeMinutes || 0,
+                    CascadingInstalls:      formData.header.cascadingInstalls,
+                    PriorityOutOfStation:   formData.header.priorityOutOfStation,
+                    AdditionalInformation:  formData.header.additionalInformation,
+                    Department:             formData.department || 'None',
+                    Status:                 'Active'
+                };
+
+                const headerResult = await spCreateItem('Handoff_Header', headerItem, digest);
+                const headerID = headerResult.Id;  // numeric ID of the new parent record
+
+                // Step 4: Write Station_Progress — one row per station
+                for (const s of formData.stations) {
+                    if (!s.station) continue;
+                    const delta = Number(s.actualPercent) - Number(s.expectedPercent);
+                    let stationStatus = 'In Progress';
+                    if (Number(s.actualPercent) >= 100) stationStatus = 'Complete';
+                    else if (delta < 0) stationStatus = 'Behind';
+                    else if (Number(s.actualPercent) === 0) stationStatus = 'Pending';
+
+                    await spCreateItem('Station_Progress', {
+                        Title:           `${handoffTitle}-${s.station}`,
+                        HandoffIDId:     headerID,   // SharePoint lookup field uses "FieldNameId"
+                        BuildCell:       s.buildCell,
+                        StationName:     s.station,
+                        SRFrame:         s.srFrame,
+                        ExpectedPercent: Number(s.expectedPercent) || 0,
+                        ActualPercent:   Number(s.actualPercent) || 0,
+                        DeltaPercent:    delta,
+                        Status:          stationStatus
+                    }, digest);
+                }
+
+                // Step 5: Write department-specific child records
+                if (formData.department === 'quality' && formData.qualityIssues?.length) {
+                    for (const q of formData.qualityIssues) {
+                        await spCreateItem('Quality_Issues', {
+                            Title:            `${handoffTitle}-${q.location || 'Issue'}`,
+                            HandoffIDId:      headerID,
+                            Station:          q.station,
+                            Location:         q.location,
+                            IssueDescription: q.description,
+                            RootCause:        q.rootCause,
+                            Severity:         q.severity,
+                            ReworkLocation:   q.reworkLocation,
+                            InspectorName:    q.inspector,
+                            CustomerNotified: q.customerNotification === 'yes',
+                            Status:           'Logged'
+                        }, digest);
+                    }
+                }
+
+                if (formData.department === 'parts' && formData.partShortages?.length) {
+                    for (const p of formData.partShortages) {
+                        await spCreateItem('Parts_Shortages', {
+                            Title:            `${handoffTitle}-${p.partNumber || 'Part'}`,
+                            HandoffIDId:      headerID,
+                            Station:          String(p.station),
+                            PartNumber:       p.partNumber,
+                            Description:      p.description,
+                            NeededQuantity:   Number(p.needed) || 0,
+                            ReceivedQuantity: Number(p.received) || 0,
+                            AvailableStock:   Number(p.available) || 0,
+                            Supplier:         p.supplier,
+                            PONumber:         p.poNumber,
+                            LeadTime:         p.leadTime,
+                            ExpectedArrival:  p.expectedArrival || null,
+                            Workaround:       p.workaround,
+                            Status:           'Shortage'
+                        }, digest);
+                    }
+                }
+
+                if (formData.department === 'engineering' && formData.engineeringIssues?.length) {
+                    for (const e of formData.engineeringIssues) {
+                        await spCreateItem('Engineering_Issues', {
+                            Title:                `${handoffTitle}-Eng`,
+                            HandoffIDId:          headerID,
+                            Station:              e.station,
+                            IssueDescription:     e.description,
+                            Impact:               e.impact,
+                            EngineerAssigned:     e.engineer,
+                            TimeLogged:           e.timeLogged,
+                            TemporaryWorkaround:  e.workaround,
+                            TargetResolution:     e.targetResolution || null,
+                            ChangeDocNumber:      e.changeDocNumber,
+                            Status:               'Active'
+                        }, digest);
+                    }
+                }
+
+                if (formData.department === 'management' && formData.managementAlerts?.length) {
+                    for (const m of formData.managementAlerts) {
+                        await spCreateItem('Management_Alerts', {
+                            Title:               `${handoffTitle}-Alert`,
+                            HandoffIDId:         headerID,
+                            AlertType:           m.alertType,
+                            Description:         m.description,
+                            EscalationLevel:     m.escalationLevel,
+                            ManagerNotified:     m.managerNotified,
+                            NotificationTime:    m.notificationTime,
+                            RecommendedAction:   m.recommendedAction,
+                            Status:              'Active'
+                        }, digest);
+                    }
+                }
+
+                // Step 6: Write KPI_Tracking summary row
+                const issueCount = (formData.qualityIssues?.length || 0)
+                    + (formData.partShortages?.length || 0)
+                    + (formData.engineeringIssues?.length || 0)
+                    + (formData.managementAlerts?.length || 0);
+
+                const criticalCount = (formData.qualityIssues?.filter(q => q.severity === 'safety').length || 0)
+                    + (formData.partShortages?.filter(p => Number(p.available) === 0).length || 0);
+
+                const anyBehind = formData.stations.some(s => (Number(s.actualPercent) - Number(s.expectedPercent)) < 0);
+
+                await spCreateItem('KPI_Tracking', {
+                    Title:          handoffTitle,
+                    HandoffIDId:    headerID,
+                    BusId:          formData.header.buildCell,
+                    Department:     formData.department || 'None',
+                    IssueCount:     issueCount,
+                    CriticalIssues: criticalCount,
+                    ScheduleStatus: anyBehind ? 'Behind' : 'On Track'
+                }, digest);
+
+                // All done
+                statusDiv.className = 'status-message success';
+                statusDiv.style = '';
+                statusDiv.textContent = `✅ Handoff submitted successfully! Record ID: ${headerID}`;
+                statusDiv.classList.remove('hidden');
+
+                setTimeout(() => { clearForm(); }, 4000);
+
+            } catch (error) {
+                statusDiv.className = 'status-message error';
+                statusDiv.style = '';
+                statusDiv.textContent = `❌ Submission failed: ${error.message}`;
+                statusDiv.classList.remove('hidden');
+                console.error('Handoff submission error:', error);
+            }
+        }
+
+        // SAVE DRAFT
+        function saveFormDraft() {
+            const formData = collectFormData();
+            localStorage.setItem('productionCellHandoffDraft', JSON.stringify(formData));
+            
+            const statusDiv = document.getElementById('submitStatus');
+            statusDiv.className = 'status-message success';
+            statusDiv.textContent = '✓ Draft saved to browser storage.';
+            statusDiv.classList.remove('hidden');
+        }
+
+        // CLEAR FORM
+        function clearForm() {
+            document.querySelectorAll('input, textarea, select').forEach(el => {
+                if (el.type === 'radio' || el.type === 'checkbox') {
+                    el.checked = false;
+                } else {
+                    el.value = '';
+                }
+            });
+            
+            document.getElementById('cell').value = '';
+            document.getElementById('shiftTemplate').value = '';
+            document.getElementById('buildingSide').value = '';
+            document.getElementById('departmentDropdown').value = '';
+            updateCellContext();
+            switchDepartment();
+            
+            const statusDiv = document.getElementById('submitStatus');
+            statusDiv.classList.add('hidden');
+        }
+
+        window.addEventListener('load', () => {
+            const draft = localStorage.getItem('productionCellHandoffDraft');
+            if (draft) {
+                console.log('Draft found in browser storage');
+            }
+        });
+    </script>
+</body>
+</html>
